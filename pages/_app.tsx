@@ -6,7 +6,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "../src/theme";
 import { Provider } from "react-redux";
-import { store } from "../src/redux/store";
+import { persistor, store } from "../src/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -15,13 +16,15 @@ export default function MyApp(props: AppProps) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <Provider store={store}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </Provider>
-      </ThemeProvider>
+      <Provider store={store}>
+        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+          <ThemeProvider theme={theme}>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </PersistGate>
+      </Provider>
     </AppCacheProvider>
   );
 }
