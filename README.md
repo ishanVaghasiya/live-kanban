@@ -10,6 +10,8 @@ NVM Version  : v1.1.11
 npm i 
 start project : npm run dev 
 
+
+
 # Key Features
 State Management:
     Redux Toolkit (RTK) for managing global state.
@@ -21,7 +23,11 @@ Protector Router:
     You can access app only after Login
 Role base Permission:
     Admin can create, add, edit and remove task
-User Login and Logout    
+User Login and Logout 
+    User can Easily login to view the dashboard   
+Code Standard
+    Add Typescript Validation to avoid data leak 
+
 
 # How to Test
 Login with different user on different browser and go to kanban tab
