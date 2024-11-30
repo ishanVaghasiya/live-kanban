@@ -46,3 +46,8 @@ export interface ICardDeletePayload {
   columnId: string,
   taskIndex: number,
 }
+
+export interface ITaskFormPayload {
+  title: string;
+  description: string;
+}

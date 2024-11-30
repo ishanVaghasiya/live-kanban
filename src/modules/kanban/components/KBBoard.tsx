@@ -2,11 +2,13 @@ import { memo, useEffect, useState } from "react";
 import { Box, Paper, Typography, Alert } from "@mui/material";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { styled } from "@mui/system";
-import { Task, Tasks } from "type";
+import { ITaskFormPayload, Task, Tasks } from "type";
 import { camelToCapital } from "@util/index";
 import TaskCard from "./Card";
 import axios from "axios";
 import Pusher from "pusher-js";
+import KBButton from "@components/form/KBButton";
+import TaskForm from "./TaskForm";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: "20px",
@@ -22,7 +24,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const ProjectTracker = () => {
   const [tasks, setTasks] = useState<Tasks>({});
-  const [error, setError] = useState<string>("");
+  const [addTaskId, setAddTaskId] = useState<string | null>(null); // *Help full for create new task and identify in which board
 
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
@@ -39,18 +41,23 @@ const ProjectTracker = () => {
     setTasks({ ...tasks });
   };
 
-  const handleDelete = (columnId: string, taskIndex: number) => {
-    axios.delete("/api/pusher", { data: { columnId, taskIndex } });
+  const handleDelete = async (columnId: string, taskIndex: number) => {
+    await axios.delete("/api/pusher", { data: { columnId, taskIndex } });
   };
 
-  const handleUpdateTask = (
+  const handleUpdateTask = async (
     columnId: string,
     taskIndex: number,
     updatedTask: Task
   ) => {
-    axios.put("/api/pusher", { columnId, taskIndex, updatedTask });
+    await axios.put("/api/pusher", { columnId, taskIndex, updatedTask });
   };
 
+  const onAddTask = async (columnId: string, payload: ITaskFormPayload) => {
+    await axios.post("/api/pusher", { columnId, data: payload });
+  };
+
+  // * Add lister for event
   useEffect(() => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
@@ -84,12 +91,6 @@ const ProjectTracker = () => {
         Project Development Tracker
       </Typography>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-
       <DragDropContext onDragEnd={handleDragEnd}>
         <Box
           sx={{
@@ -103,6 +104,23 @@ const ProjectTracker = () => {
               <Typography variant="h6" sx={{ mb: 2 }}>
                 {camelToCapital(columnId)}
               </Typography>
+
+              <KBButton onClick={() => setAddTaskId(columnId)}>
+                Add task +
+              </KBButton>
+
+              {columnId === addTaskId && (
+                <TaskForm
+                  initialValues={{
+                    title: "",
+                    description: "",
+                  }}
+                  onSubmit={(values) => {
+                    onAddTask(columnId, Object.assign(values));
+                    setAddTaskId(null);
+                  }}
+                />
+              )}
 
               <Droppable droppableId={columnId}>
                 {(provided) => (

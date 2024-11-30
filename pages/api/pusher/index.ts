@@ -1,7 +1,13 @@
 import { mock_board } from "@mock/index";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Pusher from "pusher";
-import { ICardDeletePayload, ICardUpdatePayload, Task, Tasks } from "type";
+import {
+  ICardDeletePayload,
+  ICardUpdatePayload,
+  ITaskFormPayload,
+  Tasks,
+  TaskStatus,
+} from "type";
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID!,
@@ -25,12 +31,16 @@ export default async function handler(
         break;
 
       case "POST":
-        const newTask: Task = req.body;
-        if (!mock_database[newTask.status]) {
-          return res.status(400).json({ error: "Invalid task status" });
-        }
+        const newTask: { columnId: TaskStatus; data: ITaskFormPayload } = req.body;
 
-        mock_database[newTask.status].push(newTask);
+        if (!mock_database[newTask.columnId]) {
+          return res.status(404).json({ error: "Task not found" });
+        }
+        mock_database[newTask.columnId].push({
+          id: new Date().getTime().toString(),
+          status: newTask.columnId,
+          ...newTask.data,
+        });
         await pusher.trigger("task_board", "TASK_LIST", {
           mock_database,
         });
@@ -57,7 +67,7 @@ export default async function handler(
           columnId: deleteId,
           taskIndex: deleteTaskId,
         }: ICardDeletePayload = req.body;
-        
+
         if (
           !mock_database[deleteId] ||
           !mock_database[deleteId][deleteTaskId]

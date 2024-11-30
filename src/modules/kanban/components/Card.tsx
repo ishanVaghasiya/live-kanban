@@ -8,6 +8,8 @@ import KBButton from "@components/form/KBButton";
 import { Form, Formik } from "formik";
 import { FormInput } from "@components/form/formik";
 import * as Yup from "yup";
+import TaskForm from "./TaskForm";
+import { camelToCapital } from "@util/index";
 
 interface TaskCardProps {
   task: Task;
@@ -56,45 +58,16 @@ const TaskCard = forwardRef<HTMLElement, TaskCardProps>(
       >
         {isEdit ? (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Formik
+            <TaskForm
               initialValues={{
                 title: task.title,
                 description: task.description,
               }}
-              validationSchema={validationSchema}
               onSubmit={(values) => {
                 setIsEdit(false);
                 onUpdateTask(columnId, index, Object.assign(task, values));
               }}
-            >
-              {() => (
-                <Form>
-                  <Box>
-                    <FormInput
-                      name="title"
-                      label="Title"
-                      required
-                      sx={{ mb: 3 }}
-                    />
-
-                    <FormInput
-                      name="description"
-                      label="Description"
-                      required
-                    />
-
-                    <KBButton
-                      type="submit"
-                      variant="contained"
-                      fullWidth
-                      sx={{ marginTop: 2 }}
-                    >
-                      Save
-                    </KBButton>
-                  </Box>
-                </Form>
-              )}
-            </Formik>
+            />
           </Box>
         ) : (
           <>
@@ -122,7 +95,7 @@ const TaskCard = forwardRef<HTMLElement, TaskCardProps>(
               {task.description}
             </Typography>
             <Chip
-              label={task.status}
+              label={camelToCapital(task.status)}
               size="small"
               sx={{
                 mt: 1,
