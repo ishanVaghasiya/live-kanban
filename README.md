@@ -27,6 +27,9 @@ User Login and Logout
 Login with different user on different browser and go to kanban tab
 (Add, Remove, Update) any task and see live change to all login user
 
+# Video Link
+https://www.loom.com/share/4d4d49c2b5d14ce4baffcd74660f92af?sid=b59bb831-e8ec-41db-9128-f2f19582e959
+
  # For Login use any of user (If you want to add more user then you can add from this file : (pages\api\auth\login.ts) )
  [
   {
@@ -58,6 +61,5 @@ Login with different user on different browser and go to kanban tab
     role: "user",
   },
 ];    
-
 
 
