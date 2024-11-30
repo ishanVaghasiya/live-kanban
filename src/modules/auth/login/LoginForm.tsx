@@ -1,27 +1,20 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { Button, Box, Typography, Alert } from "@mui/material";
-import * as Yup from "yup";
+import { Box, Typography, Alert } from "@mui/material";
 import { FormInput } from "@components/form/formik";
 import KBButton from "@components/form/KBButton";
-import useLoginForm from "./hooks/useLoginForm";
+import { useLoginForm } from "./hooks/useLoginForm";
 
 const LoginForm: React.FC = () => {
-  const { validationSchema, initialValues } = useLoginForm();
+  const { validationSchema, initialValues, login, isLoading, error } =
+    useLoginForm();
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        if (
-          values.email === "test@example.com" &&
-          values.password === "password123"
-        ) {
-          alert("Login successful");
-        } else {
-          alert("Invalid email or password");
-        }
+        login(values);
       }}
     >
       {({}) => (
@@ -46,6 +39,7 @@ const LoginForm: React.FC = () => {
               Login
             </Typography>
 
+            {error && <Alert severity="error">{error?.data?.message}</Alert>}
             <FormInput name="email" label="Email" type="email" required />
 
             <FormInput
@@ -60,6 +54,7 @@ const LoginForm: React.FC = () => {
               variant="contained"
               fullWidth
               sx={{ marginTop: 2 }}
+              disabled={isLoading}
             >
               Login
             </KBButton>

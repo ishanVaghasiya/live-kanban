@@ -1,5 +1,6 @@
+import { ChildProcessWithoutNullStreams } from "child_process";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { IUser, UserRole } from "type";
+import { IResponse, IUser, UserRole } from "type";
 
 export interface ServerMock extends IUser {
   password: string;
@@ -27,20 +28,14 @@ type LoginRequest = {
   password: string;
 };
 
-type LoginResponse = {
-  success: boolean;
-  message: string;
-  user?: IUser;
-};
-
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<LoginResponse>
+  res: NextApiResponse<IResponse<{ user?: IUser } | null>>
 ) {
   if (req.method !== "POST") {
     return res
       .status(405)
-      .json({ success: false, message: "Method Not Allowed" });
+      .json({ success: false, message: "Method Not Allowed", data: null });
   }
 
   const { email, password }: LoginRequest = req.body;
@@ -53,17 +48,19 @@ export default function handler(
   if (!user) {
     return res
       .status(401)
-      .json({ success: false, message: "Invalid credentials" });
+      .json({ success: false, message: "Invalid credentials", data: null });
   }
 
   return res.status(200).json({
     success: true,
     message: "Login successful",
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
+    data: {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
     },
   });
 }
