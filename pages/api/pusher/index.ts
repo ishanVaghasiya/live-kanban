@@ -1,7 +1,7 @@
 import { mock_board } from "@mock/index";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Pusher from "pusher";
-import { ICardUpdatePayload, Task, Tasks } from "type";
+import { ICardDeletePayload, ICardUpdatePayload, Task, Tasks } from "type";
 
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID!,
@@ -29,6 +29,7 @@ export default async function handler(
         if (!mock_database[newTask.status]) {
           return res.status(400).json({ error: "Invalid task status" });
         }
+
         mock_database[newTask.status].push(newTask);
         await pusher.trigger("task_board", "TASK_LIST", {
           mock_database,
@@ -40,24 +41,31 @@ export default async function handler(
         const { columnId, taskIndex, updatedTask }: ICardUpdatePayload =
           req.body;
 
+        if (!mock_database[columnId] || !mock_database[columnId][taskIndex]) {
+          return res.status(404).json({ error: "Task not found" });
+        }
+
         mock_database[columnId][taskIndex] = updatedTask;
         await pusher.trigger("task_board", "TASK_LIST", {
           mock_database,
         });
         res.status(200).json({ message: "Task updated", mock_database });
+        break;
 
       case "DELETE":
-        const { taskId, taskStatus }: { taskId: string; taskStatus: string } =
-          req.body;
-
-        if (!mock_database[taskStatus]) {
-          return res.status(400).json({ error: "Invalid task status" });
+        const {
+          columnId: deleteId,
+          taskIndex: deleteTaskId,
+        }: ICardDeletePayload = req.body;
+        
+        if (
+          !mock_database[deleteId] ||
+          !mock_database[deleteId][deleteTaskId]
+        ) {
+          return res.status(404).json({ error: "Task not found" });
         }
 
-        mock_database[taskStatus] = mock_database[taskStatus].filter(
-          (task) => task.id !== taskId
-        );
-
+        mock_database[deleteId].splice(deleteTaskId, 1);
         await pusher.trigger("task_board", "TASK_LIST", {
           mock_database,
         });

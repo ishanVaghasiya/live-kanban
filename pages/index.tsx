@@ -48,15 +48,10 @@ export default function Home() {
               justifyContent: "center",
               alignItems: "center",
             }}
-          >
-            <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-              Material UI - Next.js example in TypeScript
+          > 
+            <Typography variant="h1" component={"h1"}>
+              Coming Soon
             </Typography>
-            <Link href="/about" color="secondary">
-              Go to the about page
-            </Link>
-            <ProTip />
-            <Copyright />
           </Box>
         </Container>
       </MasterLayout>

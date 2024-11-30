@@ -41,3 +41,8 @@ export interface ICardUpdatePayload {
   taskIndex: number,
   updatedTask: Task
 }
+
+export interface ICardDeletePayload {
+  columnId: string,
+  taskIndex: number,
+}

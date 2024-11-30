@@ -21,7 +21,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const ProjectTracker = () => {
-  const [tasks, setTasks] = useState<Tasks>([]);
+  const [tasks, setTasks] = useState<Tasks>({});
   const [error, setError] = useState<string>("");
 
   const handleDragEnd = (result: any) => {
@@ -40,9 +40,7 @@ const ProjectTracker = () => {
   };
 
   const handleDelete = (columnId: string, taskIndex: number) => {
-    const newTasks = { ...tasks };
-    newTasks[columnId].splice(taskIndex, 1);
-    setTasks(newTasks);
+    axios.delete("/api/pusher", { data: { columnId, taskIndex } });
   };
 
   const handleUpdateTask = (
