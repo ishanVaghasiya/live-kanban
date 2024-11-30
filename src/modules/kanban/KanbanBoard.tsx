@@ -1,5 +1,6 @@
 import usePusher from "@services/pusher/hooks/usePusher";
 import { FC, useState } from "react";
+import KBBoard from "./components/KBBoard";
 
 interface KanbanBoardProps {}
 
@@ -24,6 +25,8 @@ const KanbanBoard: FC<KanbanBoardProps> = () => {
       <h1>Pusher with Next.js</h1>
       <button onClick={sendMessage}>Send Pusher Event</button>
       {message && <div>Received Message: {message}</div>}
+
+      <KBBoard />
     </div>
   );
 };

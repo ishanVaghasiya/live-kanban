@@ -21,7 +21,8 @@
       "@components/*": ["components/*"],
       "@modules/*": ["modules/*"],
       "@services/*": ["services/*"],
-      "@mock/*": ["mock/*"]
+      "@mock/*": ["mock/*"],
+      "@util/*": ["util/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

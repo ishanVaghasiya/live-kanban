@@ -21,3 +21,16 @@ export interface LoginPayload {
 export interface LoginResponse {
   user: IUser;
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+}
+
+type Tasks = {
+  [key: string]: Task[];
+};
+
+export type TaskStatus = "backlog" | "inProgress" | "completed";
