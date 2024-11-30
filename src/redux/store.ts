@@ -1,14 +1,17 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from 'redux-persist/lib/storage';
+import storage from "redux-persist/lib/storage";
+import kanbanBoard from "./slice/kanbanBoard";
 
 const persistConfig = {
   key: "root",
   storage,
 };
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  [kanbanBoard.name]: kanbanBoard.reducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
