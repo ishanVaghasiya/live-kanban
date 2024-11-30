@@ -13,23 +13,34 @@ start project : npm run dev
 
 
 # Key Features
-State Management:
+1) State Management:
     Redux Toolkit (RTK) for managing global state.
-State Persistence:
+2) State Persistence:
     Redux Persist to persist authentication and state across page reloads.
-Live Board Update:
+3) Live Board Update:
     All login user can view task update on live time
-Protector Router:
+4) Protector Router:
     You can access app only after Login
-Role base Permission:
+5) Role base Permission:
     Admin can create, add, edit and remove task
-User Login and Logout 
+6) User Login and Logout 
     User can Easily login to view the dashboard   
-Code Standard
+7) Code Standard
     Add Typescript Validation to avoid data leak 
-Base Path feature
+8) Base Path feature
     Import any module directly at any file without checking relative path    
+Form
+    User Formik and Yup for create form and manage form validation
 
+<!-- Form -->
+For Managing Simple and complex form use common Form component (src\components\form)
+
+<!-- Development Guide -->
+1) Do not user any third part UI component 
+  First create Component with KB<component_name> prefix to avoid name conflict with original source   
+2) Create re-useable Common component and Follow DRY principal
+3) Write logical part of component into it's own separate hook
+4) Avoid any Type and add create accurate type or interface
 
 # How to Test
 Login with different user on different browser and go to kanban tab
