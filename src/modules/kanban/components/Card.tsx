@@ -13,7 +13,6 @@ interface TaskCardProps {
   task: Task;
   index: number;
   columnId: string;
-  editedTask: Task | null;
   onDelete: (columnId: string, taskIndex: number) => void;
   onUpdateTask: (
     columnId: string,

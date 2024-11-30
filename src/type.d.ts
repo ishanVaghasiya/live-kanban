@@ -34,3 +34,10 @@ type Tasks = {
 };
 
 export type TaskStatus = "backlog" | "inProgress" | "completed";
+
+
+export interface ICardUpdatePayload {
+  columnId: string,
+  taskIndex: number,
+  updatedTask: Task
+}

@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { AccountCircle } from "@mui/icons-material";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import { useRouter } from "next/router";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const drawerWidth = 240;
 
@@ -45,9 +46,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: "calc(${theme.spacing(7)} + 1px)",
+  width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: "calc(${theme.spacing(8)} + 1px)",
+    width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
@@ -76,7 +77,7 @@ const AppBar = styled(MuiAppBar, {
       props: ({ open }) => open,
       style: {
         marginLeft: drawerWidth,
-        width: "calc(100% - ${drawerWidth}px)",
+        width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(["width", "margin"], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
@@ -147,8 +148,8 @@ const MasterLayout: FC<Props> = ({ children }) => {
     setOpen(false);
   };
 
-  const handleKanbanClick = () => {
-    router.push("/board");
+  const handlePageRedirect = (route: string) => {
+    router.push(route);
   };
 
   return (
@@ -213,32 +214,54 @@ const MasterLayout: FC<Props> = ({ children }) => {
             </DrawerHeader>
             <Divider />
             <List>
-              {["Kanban"].map((text, index) => (
-                <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                  <ListItemButton
+              <ListItem disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  sx={[
+                    { minHeight: 48, px: 2.5 },
+                    open
+                      ? { justifyContent: "initial" }
+                      : { justifyContent: "center" },
+                  ]}
+                  onClick={() => handlePageRedirect(`/`)}
+                >
+                  <ListItemIcon
                     sx={[
-                      { minHeight: 48, px: 2.5 },
-                      open
-                        ? { justifyContent: "initial" }
-                        : { justifyContent: "center" },
+                      { minWidth: 0, justifyContent: "center" },
+                      open ? { mr: 3 } : { mr: "auto" },
                     ]}
-                    onClick={handleKanbanClick}
                   >
-                    <ListItemIcon
-                      sx={[
-                        { minWidth: 0, justifyContent: "center" },
-                        open ? { mr: 3 } : { mr: "auto" },
-                      ]}
-                    >
-                      <ViewKanbanIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Home"}
+                    sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  sx={[
+                    { minHeight: 48, px: 2.5 },
+                    open
+                      ? { justifyContent: "initial" }
+                      : { justifyContent: "center" },
+                  ]}
+                  onClick={() => handlePageRedirect(`/board`)}
+                >
+                  <ListItemIcon
+                    sx={[
+                      { minWidth: 0, justifyContent: "center" },
+                      open ? { mr: 3 } : { mr: "auto" },
+                    ]}
+                  >
+                    <ViewKanbanIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={"Kanban"}
+                    sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                  />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

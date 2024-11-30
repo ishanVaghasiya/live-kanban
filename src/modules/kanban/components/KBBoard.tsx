@@ -1,26 +1,12 @@
-import { memo, useState } from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  Chip,
-  IconButton,
-  Alert,
-  Button,
-} from "@mui/material";
+import { memo, useEffect, useState } from "react";
+import { Box, Paper, Typography, Alert } from "@mui/material";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { styled } from "@mui/system";
-import { Edit, Delete, Add } from "@mui/icons-material";
-import { Task } from "type";
-import { mock_board } from "@mock/index";
+import { Task, Tasks } from "type";
 import { camelToCapital } from "@util/index";
 import TaskCard from "./Card";
-
-// Type for Task
-type Tasks = {
-  [key: string]: Task[];
-};
+import axios from "axios";
+import Pusher from "pusher-js";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: "20px",
@@ -35,9 +21,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const ProjectTracker = () => {
-  const [tasks, setTasks] = useState<Tasks>(mock_board);
+  const [tasks, setTasks] = useState<Tasks>([]);
   const [error, setError] = useState<string>("");
-  const [editedTask, setEditedTask] = useState<Task | null>(null);
 
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
@@ -54,10 +39,6 @@ const ProjectTracker = () => {
     setTasks({ ...tasks });
   };
 
-  const handleEdit = (task: Task) => {
-    setEditedTask(task);
-  };
-
   const handleDelete = (columnId: string, taskIndex: number) => {
     const newTasks = { ...tasks };
     newTasks[columnId].splice(taskIndex, 1);
@@ -69,21 +50,35 @@ const ProjectTracker = () => {
     taskIndex: number,
     updatedTask: Task
   ) => {
-    if (!updatedTask.title || !updatedTask.description) {
-      setError("Title and description are required");
-      return;
-    }
-
-    const newTasks = { ...tasks };
-    newTasks[columnId][taskIndex] = updatedTask;
-    setTasks(newTasks);
-    setEditedTask(null);
-    setError("");
+    axios.put("/api/pusher", { columnId, taskIndex, updatedTask });
   };
 
-  const handleInputChange = (field: keyof Task, value: string) => {
-    setEditedTask((prev) => (prev ? { ...prev, [field]: value } : null));
-  };
+  useEffect(() => {
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    });
+
+    const channel = pusher.subscribe("task_board");
+
+    channel.bind("TASK_LIST", (data: any) => {
+      console.log("Received event:", data);
+      setTasks(data.mock_database);
+    });
+
+    return () => {
+      pusher.unsubscribe("task_board");
+    };
+  }, []);
+
+  //* Fetch intial Data
+  useEffect(() => {
+    const fetch = async () => {
+      await axios.get("/api/pusher").then(({ data }) => {
+        setTasks(data.mock_database);
+      });
+    };
+    fetch();
+  }, []);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -134,9 +129,6 @@ const ProjectTracker = () => {
                             columnId={columnId}
                             onUpdateTask={handleUpdateTask}
                             onDelete={handleDelete}
-                            // editedTask={editedTask}
-                            // onEdit={handleEdit}
-                            // onInputChange={handleInputChange}
                           />
                         )}
                       </Draggable>

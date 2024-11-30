@@ -1,4 +1,3 @@
-import usePusher from "@services/pusher/hooks/usePusher";
 import { FC, useState } from "react";
 import KBBoard from "./components/KBBoard";
 
@@ -7,7 +6,6 @@ interface KanbanBoardProps {}
 const KanbanBoard: FC<KanbanBoardProps> = () => {
   const [message, setMessage] = useState<string | null>(null);
 
-  usePusher(); //* Register the service
 
   const sendMessage = async () => {
     const res = await fetch("/api/pusher", {
