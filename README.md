@@ -1,10 +1,17 @@
 # live-kanban
 live Kanban using Next Js
 
-# For Start Project
 
+# Project Setup
 NODE Version : v20.18.1
 NVM Version  : v1.1.11
 
-# npm i to install node_modules
-# npm run dev to start project
+# For Start Project
+npm i 
+start project : npm run dev 
+
+# Key Features
+State Management:
+    Redux Toolkit (RTK) for managing global state.
+State Persistence:
+    Redux Persist to persist authentication and state across page reloads.
