@@ -9,17 +9,31 @@ export interface ServerMock extends IUser {
 const server_mock_users: ServerMock[] = [
   {
     id: 1,
-    email: "test@mail.com",
-    password: "test@123", // Store hashed passwords in real scenarios!
-    name: "Test User",
-    role: "user",
+    email: "admin@mail.com",
+    password: "test@123",
+    name: "Admin 1",
+    role: "admin",
   },
   {
     id: 2,
+    email: "admin2@mail.com",
+    password: "test@123",
+    name: "Admin 2",
+    role: "admin",
+  },
+  {
+    id: 3,
+    email: "test1@mail.com",
+    password: "test@123",
+    name: "Test User 1",
+    role: "user",
+  },
+  {
+    id: 4,
     email: "test2@mail.com",
     password: "test@123",
-    name: "John Doe",
-    role: "admin",
+    name: "Test User 2",
+    role: "user",
   },
 ];
 
