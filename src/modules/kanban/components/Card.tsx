@@ -3,10 +3,7 @@
 import { forwardRef, memo, useState } from "react";
 import { Box, Typography, IconButton, Chip } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import { Task, TaskStatus } from "type";
-import KBButton from "@components/form/KBButton";
-import { Form, Formik } from "formik";
-import { FormInput } from "@components/form/formik";
+import { Task, TaskStatus, UserRole } from "type";
 import * as Yup from "yup";
 import TaskForm from "./TaskForm";
 import { camelToCapital } from "@util/index";
@@ -21,6 +18,7 @@ interface TaskCardProps {
     taskIndex: number,
     updatedTask: Task
   ) => void;
+  userRole?: UserRole;
 }
 
 const validationSchema = Yup.object({
@@ -29,7 +27,7 @@ const validationSchema = Yup.object({
 });
 
 const TaskCard = forwardRef<HTMLElement, TaskCardProps>(
-  ({ task, index, columnId, onDelete, onUpdateTask }, ref) => {
+  ({ task, index, columnId, onDelete, onUpdateTask, userRole }, ref) => {
     const getStatusColor = (status: TaskStatus) => {
       switch (status) {
         case "backlog":
@@ -75,21 +73,23 @@ const TaskCard = forwardRef<HTMLElement, TaskCardProps>(
               sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
             >
               <Typography variant="subtitle1">{task.title}</Typography>
-              <Box>
-                <IconButton
-                  size="small"
-                  onClick={() => setIsEdit(true)}
-                  aria-label="edit task"
-                >
-                  <Edit />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => onDelete(columnId, index)}
-                >
-                  <Delete />
-                </IconButton>
-              </Box>
+              {userRole === "admin" && (
+                <Box>
+                  <IconButton
+                    size="small"
+                    onClick={() => setIsEdit(true)}
+                    aria-label="edit task"
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() => onDelete(columnId, index)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Box>
+              )}
             </Box>
             <Typography variant="body2" color="text.secondary">
               {task.description}

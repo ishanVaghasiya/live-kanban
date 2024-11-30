@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, use, useEffect, useState } from "react";
 import { Box, Paper, Typography, Alert } from "@mui/material";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { styled } from "@mui/system";
@@ -9,6 +9,7 @@ import axios from "axios";
 import Pusher from "pusher-js";
 import KBButton from "@components/form/KBButton";
 import TaskForm from "./TaskForm";
+import { useAppSelector } from "@redux/hooks/hook";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: "20px",
@@ -25,6 +26,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const ProjectTracker = () => {
   const [tasks, setTasks] = useState<Tasks>({});
   const [addTaskId, setAddTaskId] = useState<string | null>(null); // *Help full for create new task and identify in which board
+  const { user } = useAppSelector((state) => state.auth);
+  // console.log('uset', user);
 
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
@@ -105,9 +108,11 @@ const ProjectTracker = () => {
                 {camelToCapital(columnId)}
               </Typography>
 
-              <KBButton onClick={() => setAddTaskId(columnId)}>
-                Add task +
-              </KBButton>
+              {user?.role === "admin" && (
+                <KBButton onClick={() => setAddTaskId(columnId)}>
+                  Add task +
+                </KBButton>
+              )}
 
               {columnId === addTaskId && (
                 <TaskForm
@@ -141,6 +146,7 @@ const ProjectTracker = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            userRole={user?.role}
                             task={task}
                             columnId={columnId}
                             onUpdateTask={handleUpdateTask}
