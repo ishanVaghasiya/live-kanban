@@ -1,46 +1,16 @@
-// // src/hooks/useLoginForm.ts
-// import { useState } from "react";
-// import { useFormik } from "formik";
-// import * as Yup from "yup";
-
-// interface LoginFormValues {
-//   email: string;
-//   password: string;
-// }
-
-// const useLoginForm = () => {
-//   const validationSchema = Yup.object({
-//     email: Yup.string()
-//       .email("Invalid email format")
-//       .required("Email is required"),
-//     password: Yup.string()
-//       .min(6, "Password must be at least 6 characters")
-//       .required("Password is required"),
-//   });
-
-//   const initialValues = {
-//     email: "",
-//     password: "",
-//   };
-
-//   return {
-//     validationSchema,
-//     initialValues,
-//   };
-// };
-
-// export default useLoginForm;
 
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@redux/slice/authslice";
 import { useLoginMutation } from "@redux/api/authApi";
+import { useRouter } from "next/router";
 
 export const useLoginForm = () => {
   const [loginApi, { isLoading, error }] = useLoginMutation();
-  console.log("error", error);
 
+  const router = useRouter();
   const dispatch = useDispatch();
+  const redirectTo = router.query.redirect || "/";
 
   const initialValues = {
     email: "",
@@ -64,6 +34,7 @@ export const useLoginForm = () => {
       }
 
       dispatch(loginSuccess(response.data.user));
+      router.push(redirectTo as string);
     } catch (error: any) {}
   };
 
