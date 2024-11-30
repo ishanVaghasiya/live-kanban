@@ -27,6 +27,8 @@ User Login and Logout
     User can Easily login to view the dashboard   
 Code Standard
     Add Typescript Validation to avoid data leak 
+Base Path feature
+    Import any module directly at any file without checking relative path    
 
 
 # How to Test
