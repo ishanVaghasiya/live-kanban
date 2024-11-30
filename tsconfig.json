@@ -17,7 +17,8 @@
     "incremental": true,
     "baseUrl": "src",
     "paths": {
-      "@redux/*": ["redux/*"]
+      "@redux/*": ["redux/*"],
+      "@components/*": ["components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
